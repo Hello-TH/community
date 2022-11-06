@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="/flagment/common :: meta_header('マイページ',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/profile.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<div class="wrap">
+				<div class="content" th:object="${userInfo}">
+					<th:block th:if="${createUserId.equals(#authentication.principal.id)}">
+						<h1 class="heading-lv1 text-center">マイページ</h1>
+					</th:block>
+					<th:block th:if="!(${createUserId.equals(#authentication.principal.id)})">
+						<h1 class="heading-lv1 text-center">ユーザーページ</h1>
+					</th:block>
+					<figure class="profile-image">
+						<img th:src="@{'/image/default.jpeg'}" alt="イメージ画像" id="userImg">
+						<!-- 						<th:block th:if="${createUserId.equals(#authentication.principal.id)}">
+							<a th:href="@{'user/changeImage/'}" style="font-size: 10px;">変更</a>
+						</th:block> -->
+					</figure>
+					<h2 class="heading-lv2 heading-margin text-center">
+						<span>ユーザー名</span>
+						<th:block th:if="${createUserId.equals(#authentication.principal.id)}">
+							<a href="" style="font-size: 10px;">変更</a>
+						</th:block>
+					</h2>
+					<p class="text text-center" th:text="*{userName}"></p>
+					<h3 class="heading-lv3 heading-margin text-center">
+						<span>自己紹介</span>
+						<th:block th:if="${createUserId.equals(#authentication.principal.id)}">
+							<a href="" style="font-size: 10px;">変更</a>
+						</th:block>
+					</h3>
+					<p class="text text-center" th:text="*{userComment}">よろしくおねがいします。</p>
+					<div class="text-center">
+						<p th:text="'部屋作成件数:　' + ${createRoomLen}"></p>
+						<p th:text="'部屋参加件数:　' + ${joinRoomLen}"></p>
+						<p th:text="'コメントした件数:　' + ${doCommentLen}"></p>
+					</div>
+				</div>
+			</div>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

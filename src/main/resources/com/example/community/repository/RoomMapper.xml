@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.community.repository.RoomMapper">
+
+	<select id="getRoomLength" resultType="int">
+		SELECT
+			count(*)
+		FROM
+			rooms
+	</select>
+	
+	<select id="getMostPeopleLenRoom" resultMap="room">
+		SELECT
+		    R.id
+		    , create_user_id
+		    , room_name
+		    , people
+		    , good
+		    , bad
+		    , approval
+		    , pref_name
+		    , category_name
+		    , feature
+		    , room_info
+		    , created_at
+		FROM
+		    rooms as R
+		INNER JOIN categories as C
+			ON C.id = R.category_id
+		INNER JOIN prefectures as P
+			ON P.id = R.pref_id
+		ORDER BY
+		    people DESC 
+		LIMIT
+		    #{page},10
+	</select>
+	
+	<select id="getSearchRoom" resultMap="room">
+		SELECT DISTINCT
+		    R.id
+		    , create_user_id
+		    , R.room_name
+		    , people
+		    , good
+		    , bad
+		    , approval
+		    , pref_name
+		    , category_name
+		    , feature
+		    , room_info
+		    , created_at 
+		FROM
+		    rooms as R
+		INNER JOIN categories as C
+			ON C.id = R.category_id
+		INNER JOIN prefectures as P
+			ON P.id = R.pref_id
+		WHERE
+		    feature LIKE CONCAT('%', #{searchWord}, '%') 
+		    OR R.room_name LIKE CONCAT('%', #{searchWord}, '%') 
+		    OR room_info LIKE CONCAT('%', #{searchWord}, '%') 
+		    AND approval = #{ROOM_APPRIVAL_FREE} 
+		LIMIT
+		    10
+	</select>
+	
+	<select id="getCreateRoomUser" resultMap="user">
+		SELECT
+		    U.id
+		    , user_name 
+		FROM
+		    rooms as R
+		    INNER JOIN users as U
+		        ON create_user_id = U.id 
+		WHERE
+		    R.id = #{roomId}
+	</select>
+
+	<select id="getJoinNumber" resultType="java.lang.Integer">
+		SELECT 
+			room_ctrl_num 
+		FROM 
+			room_controllers 
+		WHERE 
+		 	room_id = #{roomId} 
+		and 
+			user_id = #{userId}
+	</select>
+
+	<select id="getApprovalNum" resultType="java.lang.Integer">
+		SELECT
+		    approval 
+		FROM
+		    rooms
+		WHERE
+		    id = #{roomId}
+	</select>
+
+	<select id="getRoom" resultMap="room">
+		SELECT DISTINCT
+		    R.id
+		    , create_user_id
+		    , R.room_name
+		    , people
+		    , good
+		    , bad
+		    , approval
+		    , pref_name
+		    , category_name
+		    , feature
+		    , room_info
+		    , created_at 
+		FROM
+		    rooms as R
+		INNER JOIN categories as C
+			ON C.id = R.category_id
+		INNER JOIN prefectures as P
+			ON P.id = R.pref_id
+		WHERE
+		    R.id = #{roomId}
+	</select>
+	
+   <select id="createdRoomId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+
+	<insert id="create" useGeneratedKeys="true"
+		parameterType="com.example.community.dto.RoomRequest">
+		INSERT 
+		INTO rooms( 
+		    create_user_id
+		    , room_name
+		    , approval
+		    , pref_id
+		    , category_id
+		    , feature
+		    , room_info
+		) 
+		VALUES ( 
+		    #{createUserId}
+		    , #{roomName} 
+		    , #{approval}
+		    , #{prefId}
+		    , #{categoryId}
+		    , #{feature}
+		    , #{roomInfo}
+		)
+	</insert>
+
+	<insert id="userJoin">
+		INSERT
+		INTO room_controllers(user_id, room_id, room_ctrl_num) VALUE ( 
+		    #{userId}
+		    , #{roomId}
+		    , #{ROOM_CTRL_DONE}
+		)
+	</insert>
+
+	<insert id="createMasterJoinUser">
+		INSERT 
+		INTO room_controllers(user_id, room_id, room_ctrl_num) 
+		VALUES ( 
+		    #{userId}
+		    , #{roomId}
+		    , #{ROOM_CTRL_MASTER}
+		)
+	</insert>
+
+	<insert id="userJoinRequest">
+		INSERT 
+		INTO room_controllers(user_id, room_id, room_ctrl_num) VALUE ( 
+		    #{userId}
+		    , #{roomId}
+		    , #{ROOM_CTRL_WAIT}
+		)
+	</insert>
+	
+	<update id="roomPeopleAdd">
+		UPDATE rooms 
+		SET
+		    people = people + 1 
+		WHERE
+		    id = #{roomId}
+	</update>
+	
+	<update id="roomPeopleSub">
+		UPDATE rooms 
+		SET
+		    people = people + (-1) 
+		WHERE
+		    id = #{roomId}
+	</update>
+	
+	<update id="roomEdit" parameterType="com.example.community.dto.RoomRequest">
+		UPDATE rooms
+		SET
+		    room_name = #{roomName}
+		    , approval = #{approval}
+		    , pref_id = #{prefId}
+		    , category_id = #{categoryId}
+		    , feature = #{feature}
+		    , room_info = #{roomInfo} 
+		WHERE
+		    id = #{id}
+	</update>
+
+	<delete id="roomDelete">
+		DELETE 
+		FROM
+		    rooms
+		WHERE
+		    id = #{roomId}
+	</delete>
+
+	<delete id="join_delete">
+		DELETE FROM 
+			room_controllers 
+		WHERE 
+			room_id = #{roomId}
+	</delete>
+	
+	<select id="getCreateRoomLength" resultType="int">
+		SELECT
+		    count(*)
+		FROM
+		    rooms
+		WHERE
+		    create_user_id = #{userId}
+	</select>
+	
+	<select id="getJoinRoomLength" resultType="int">
+		SELECT
+		    count(*) 
+		FROM
+		    room_controllers 
+		WHERE
+		    user_id = #{userId} 
+		    AND room_ctrl_num = #{ROOM_CTRL_DONE}
+	</select>
+
+	<update id="doPermission">
+		UPDATE room_controllers 
+		SET
+		    room_ctrl_num = #{ROOM_CTRL_DONE}
+		WHERE
+		    room_id = #{roomId} 
+		    AND user_id = #{userId}
+	</update>
+	
+	<delete id="notPermission">
+		DELETE 
+		FROM
+		    room_controllers 
+		WHERE
+		    room_id = #{roomId} 
+		    AND user_id = #{userId}
+	</delete>
+	
+	<select id="getEvaluationStatus" resultType="java.lang.Integer">
+		SELECT
+			evaluation
+		FROM
+		    evaluations 
+		WHERE
+		    user_id = #{userId}
+		    And
+		    room_id = #{roomId}; 
+	 </select>
+	 
+	 <update id="evaluationTotalCange">
+		UPDATE rooms 
+		SET
+		    good = good + #{good}
+		    , bad = bad + #{bad} 
+		WHERE
+		    id = #{roomId}
+	 </update>
+	 
+	 <update id="evaluationChange">
+		UPDATE evaluations
+		SET
+			evaluation = #{status}
+		WHERE
+		    room_id = #{roomId}
+		    AND
+		    user_id = #{userId}
+	 </update>
+	 
+	 <insert id="evalutionCreate">
+	 	INSERT INTO
+	 		evaluations(user_id, room_id, evaluation)
+	 	VALUE
+	 		(#{userId}, #{roomId}, #{status})
+	 </insert>
+	 
+	 <delete id="evaluationDelete">
+		DELETE 
+		FROM
+		    evaluations 
+		WHERE
+		    room_id = #{roomId}
+	 </delete>
+	 	
+	<!-- DBのカラム名と、Classファイルの関連付け -->
+	<resultMap type="com.example.community.entity.Room" id="room">
+		<result property="createUserId" column="create_user_id" />
+		<result property="prefName" column="pref_name" />
+	   <result property="categoryName" column="category_name" />
+		<result property="roomName" column="room_name" />
+		<result property="imgName" column="img_name" />
+		<result property="roomInfo" column="room_info" />
+		<result property="createdAt" column="created_at" />
+	</resultMap>
+	
+	<resultMap type="com.example.community.entity.User" id="user">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,31 @@
+main {
+	text-align: center
+}
+
+.subTitle {
+	width: 580px;
+	margin: auto;
+	display: flex;
+}
+
+.evaluation {
+	margin-left: 500px;
+	display: flex;
+}
+
+.evaluationBtn {
+	width: 100px;
+	margin-right: 10px;
+}
+
+.good {
+	background-color: red;
+}
+
+.bad {
+	background-color: blue;
+}
+
+.memberList {
+	margin-left: 400px;
+}

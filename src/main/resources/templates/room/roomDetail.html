@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="/flagment/common :: meta_header('部屋の詳細',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/roomDetails.css}">
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+	// 先にJavaScriptが読み込まれると何故か動かないから仕方なしに
+	setTimeout(function() {
+
+		// 評価の数字　0 = なし, 1 = 高評価, 2 = 低評価
+		let elem = /*[[${evaluation}]]*/
+		console.log(elem);
+
+		let good = document.getElementById("good");
+		let bad = document.getElementById("bad");
+
+		//高評価、低評価の場合で、所定の要素にクラスを追加する。 
+		if (elem === 1) {
+			good.classList.add("good");
+		} else if (elem === 2) {
+			bad.classList.add("bad");
+		}
+	}, 1);
+	/*]]>*/
+</script>
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<div th:object="${roomData}">
+				<h1 th:text="*{roomName}"></h1>
+				<div class="subTitle">
+					<p th:text="'カテゴリ： ' + *{categoryName}"></p>
+					<p th:text="'　地域： ' + *{prefName}"></p>
+					<p th:text="'　参加人数： ' + *{people}"></p>
+					<p th:text="'　Good数： ' + *{good}"></p>
+					<p th:text="'　Bad数： ' + *{bad}"></p>
+				</div>
+				<div th:text="*{roomInfo}"></div>
+			</div>
+			<div class="evaluation" th:object="${roomData}">
+				<form th:action="@{'/room/evaluation/'}" method="post">
+					<input type="hidden" name="evaluation" value="good"> <input type="hidden" name="roomId"
+						th:value=*{id}>
+					<button class="evaluationBtn" id="good">good</button>
+				</form>
+				<form th:action="@{'/room/evaluation/'}" method="post">
+					<input type="hidden" name="evaluation" value="bad"> <input type="hidden" name="roomId"
+						th:value=*{id}>
+					<button class="evaluationBtn" id="bad">bad</button>
+				</form>
+			</div>
+			<br> <a th:href="@{'/showUserPage/' + ${createUserId}}"
+				th:text="'作成者:　' + ${createUserName}"></a>
+			<hr>
+			<th:block th:if="${#authentication.principal.id != createUserId}" th:object="${roomData}">
+				<form th:action="@{/doExit}" method="post">
+					<input type="hidden" name="roomId" th:value="*{id}"> <input type="hidden" name="userId"
+						th:value="${#authentication.principal.id}">
+					<button>退出する。</button>
+				</form>
+			</th:block>
+			<h3>参加者</h3>
+			<th:block th:if="${#authentication.principal.id == createUserId}">
+				<table border="1" class="memberList">
+					<tr>
+						<th>ユーザー名</th>
+						<th>一言</th>
+						<th>退出</th>
+					</tr>
+					<tr th:each="user : ${userData}">
+						<td><a th:href="@{'/showUserPage/' + ${user.id}}" th:text="${user.userName}"></a></td>
+						<td th:text="${user.userComment}"></td>
+						<td th:object="${roomData}"><th:block th:if="${#authentication.principal.id != user.id}">
+								<form th:action="@{/forcedExit}" method="post">
+									<input type="hidden" name="createUserId" th:value="${createUserId}"> <input
+										type="hidden" name="roomId" th:value="*{id}"> <input type="hidden" name="userId"
+										th:value="${user.id}"> <input type="hidden" name="userName"
+										th:value="${user.userName}">
+									<button>退出させる</button>
+								</form>
+							</th:block></td>
+					</tr>
+				</table>
+			</th:block>
+			<th:block th:if="${#authentication.principal.id != createUserId}">
+				<table class="memberList" border="1">
+					<tr>
+						<th>ユーザー名</th>
+						<th>一言</th>
+					</tr>
+					<tr th:each="user : ${userData}">
+						<td><a th:href="@{'/showUserPage/' + ${user.id}}" th:text="${user.userName}"></a></td>
+						<td th:text="${user.userComment}"></td>
+					</tr>
+				</table>
+			</th:block>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

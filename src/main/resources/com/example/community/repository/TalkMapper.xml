@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.community.repository.TalkMapper">
+
+	<select id="getRecentTalk" resultMap="talk">
+		SELECT
+		    T.room_id
+		    , T.user_id
+		    , message
+		    , T.created_at
+		    , U.user_name
+		    , R.room_name 
+		FROM
+		    talks as T 
+		    INNER JOIN users as U
+		        ON T.user_id = U.id 
+		    INNER JOIN rooms as R 
+		        ON T.room_id = R.id 
+		ORDER BY
+		    created_at DESC 
+		limit
+		    10;
+	</select>
+
+	<select id="getJoinRoomData" resultMap="room">
+		SELECT
+		    R.id
+		    , room_name
+		    , C.category_name
+		    , people
+		    , good
+		    , bad
+		    , R.created_at 
+		FROM
+		    room_controllers as RC
+		    INNER JOIN rooms as R 
+		        ON RC.room_id = R.id
+		    INNER JOIN categories as C
+		    	ON R.category_id = C.id
+		WHERE
+		    RC.user_id = #{userId} 
+		    AND RC.room_ctrl_num BETWEEN #{ROOM_CTRL_DONE} AND #{ROOM_CTRL_MASTER}
+	</select>
+
+	<select id="getMasterRoomData" resultMap="room">
+		SELECT
+		    R.id
+		    , room_name
+		    , category_name
+		    , people
+		    , good
+		    , bad
+		    , R.created_at 
+		FROM
+		    room_controllers as RC
+		    INNER JOIN rooms as R 
+		        ON RC.room_id = R.id
+		    INNER JOIN categories as C
+		    	 ON C.id = R.category_id
+		WHERE
+		    RC.user_id = #{userId} 
+		    AND room_ctrl_num = #{ROOM_CTRL_MASTER}
+	</select>
+
+	<insert id="createMessage" useGeneratedKeys="true"
+		parameterType="com.example.community.dto.TalkRequest">
+		INSERT 
+		INTO talks(room_id, user_id, message) 
+		VALUES (#{roomId}, #{userId}, #{message})
+	</insert>
+
+	<select id="getTalk" resultMap="talk">
+		SELECT
+		    U.user_name
+		    , T.user_id
+		    , message
+		    , T.created_at 
+		FROM
+		    talks as T 
+		    INNER JOIN users as U 
+		        ON U.id = T.user_id 
+		WHERE
+		    T.room_id = #{roomId} 
+		ORDER BY
+		    T.id
+	</select>
+	
+	<delete id="talkDelete">
+		DELETE 
+		FROM
+			talks
+		WHERE
+		    room_id = #{roomId}
+	</delete>
+	
+	<select id="getUserTalkLength" resultType="int">
+		SELECT
+		    count(*) 
+		FROM
+		    talks 
+		WHERE
+		    user_id = #{userId}
+	</select>
+	
+	<!-- 部屋名、ユーザー名、部屋ID、ユーザーID -->
+	<select id="getJoinRequest" resultMap="talk">
+		SELECT
+		    R.room_name
+		    , U.user_name
+		    , RC.room_id
+		    , RC.user_id
+		FROM
+		    room_controllers as RC 
+		    INNER JOIN users as U
+		        ON RC.user_id = U.id
+		    INNER JOIN rooms as R
+		        ON RC.room_id = R.id 
+		WHERE
+		    room_ctrl_num = #{ROOM_CTRL_WAIT}
+		    AND R.create_user_id = #{userId}
+	</select>
+
+	<resultMap type="com.example.community.entity.Talk" id="talk">
+		<result property="userName" column="user_name" />
+		<result property="roomName" column="room_name" />
+		<result property="roomId" column="room_id" />
+		<result property="userId" column="user_id" />
+		<result property="imgName" column="img_name" />
+		<result property="createdAt" column="created_at" />
+	</resultMap>
+
+	<resultMap type="com.example.community.entity.Room" id="room">
+		<result property="createUserId" column="create_user_id" />
+		<result property="prefName" column="pref_name" />
+		<result property="categoryName" column="category_name" />
+		<result property="roomName" column="room_name" />
+		<result property="imgName" column="img_name" />
+		<result property="roomInfo" column="room_info" />
+		<result property="createdAt" column="created_at" />
+	</resultMap>
+
+</mapper>

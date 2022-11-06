@@ -1,0 +1,67 @@
+main {
+	display: flex;
+}
+
+.mainLeft {
+	width: 20%;
+}
+
+.mainCenter {
+	background-color: white;
+	width: 50%;
+}
+
+.mainRight {
+	background-color: white;
+	margin-left: 40px;
+	margin-right: 30px;
+	width: 20%;
+}
+
+.mcTitle {
+	text-align: center;
+}
+
+.rankingBox {
+	display: flex;
+}
+
+.box {
+	/* 	border: solid 1px black; */
+	width: 450px;
+	margin-left: 30px;
+}
+
+#roomImage {
+	width: 100px;
+	height: 100px;
+	border-radius: 90px;
+}
+
+.subBox {
+	display: flex;
+}
+
+.talkInfo {
+	font-size: 12px;
+	margin: 0px;
+}
+
+.pagerArea {
+	display: flex;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.pagerNumberArea {
+	display: flex;
+	margin-left: 10px;
+}
+
+.pagerGo {
+	margin-left: 10px;
+}
+
+.currentNum {
+	color: red;
+}

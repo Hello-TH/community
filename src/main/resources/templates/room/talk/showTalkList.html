@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="flagment/common :: meta_header('参加中のルーム一覧',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/showTalkList.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<h1>参加中のトーク一覧</h1>
+			<div class="msg" th:text="${msg}"></div>
+			<hr>
+			<h3>自分が作成したルーム</h3>
+			<th:block th:unless="${masterRoomData.size() != 0}">
+				<h4 class="roomNotMsg">自分が作成したルームはありません。</h4>
+			</th:block>
+			<th:block th:if="${masterRoomData.size() != 0}">
+				<table border="1">
+					<tr>
+						<th>タイトル</th>
+						<th>カテゴリ</th>
+						<th>参加人数</th>
+						<th>Good</th>
+						<th>Bad</th>
+						<th>作成日時</th>
+						<th>編集</th>
+						<th>削除</th>
+					</tr>
+					<tr th:each="master : ${masterRoomData}">
+						<td><a th:href="@{'talkRoomRequest/' + ${master.id}}" th:text="${master.roomName}"></a></td>
+						<td th:text="${master.categoryName}"></td>
+						<td th:text="${master.people}"></td>
+						<td th:text="${master.good}"></td>
+						<td th:text="${master.bad}"></td>
+						<td th:text="${master.createdAt}"></td>
+						<td><a th:href="@{'/room/editForm/' + ${master.id}}">編集</a></td>
+						<td>
+							<form th:action="@{/room/delete}" method="post">
+								<input type="hidden" name="roomId" th:value="${master.id}">
+								<button>削除</button>
+							</form>
+						</td>
+					</tr>
+				</table>
+			</th:block>
+			<th:block th:if="${masterRoomData.size() != 0}">
+				<hr>
+				<div th:each="request : ${joinRequestData}">
+					<div style="display: flex;">
+						<div>
+							<a th:href="@{'/showUserPage/' + ${request.userId}}" th:text="${request.userName}"></a><span
+								th:text="'さんが、「' + ${request.roomName} + '」に参加申請をしています。'"></span>
+						</div>
+						<form th:action="@{/doPermission}" method="POST">
+							<input type="hidden" name="roomId" th:value="${request.roomId}"> <input type="hidden"
+								name="userId" th:value="${request.userId}"> <input type="submit" value="許可する">
+						</form>
+						<form th:action="@{/notPermission}" method="POST">
+							<input type="hidden" name="roomId" th:value="${request.roomId}"> <input type="hidden"
+								name="userId" th:value="${request.userId}"> <input type="submit" value="許可しない">
+						</form>
+					</div>
+				</div>
+			</th:block>
+			<h3>参加中のルーム</h3>
+			<th:block th:unless="${joinRoomData.size() != 0}">
+				<h4 class="roomNotMsg">参加中のルームはありません。</h4>
+			</th:block>
+			<th:block th:if="${joinRoomData.size() != 0}">
+				<table border="1">
+					<tr>
+						<th>タイトル</th>
+						<th>カテゴリ</th>
+						<th>参加人数</th>
+						<th>Good</th>
+						<th>Bad</th>
+						<th>作成日時</th>
+					</tr>
+					<tr th:each="join : ${joinRoomData}">
+						<td><a th:href="@{'/talkRoomRequest/' + ${join.id}}" th:text="${join.roomName}"></a></td>
+						<td th:text="${join.categoryName}"></td>
+						<td th:text="${join.people}"></td>
+						<td th:text="${join.good}"></td>
+						<td th:text="${join.bad}"></td>
+						<td id="test" th:text="${join.createdAt}"></td>
+					</tr>
+				</table>
+			</th:block>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

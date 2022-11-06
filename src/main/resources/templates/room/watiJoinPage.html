@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="/flagment/common :: meta_header('トークルーム',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/request.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main th:object="${roomData}">
+			<h1 th:text="*{roomName}"></h1>
+			<div class="subTitle">
+				<p th:text="'カテゴリ： ' + *{categoryName}"></p>
+				<p th:text="'　地域： ' + *{prefName}"></p>
+				<p th:text="'　参加人数： ' + *{people}"></p>
+				<p th:text="'　Good数： ' + *{good}"></p>
+				<p th:text="'　Bad数： ' + *{bad}"></p>
+			</div>
+			<div th:text="*{roomInfo}"></div>
+			<h1>現在参加申請中です。申請されるまでお待ちください！</h1>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+	<form action="" method="post">
+		<input type="submit">
+	</form>
+</body>
+</html>

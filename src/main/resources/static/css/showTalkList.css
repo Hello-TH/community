@@ -1,0 +1,10 @@
+.roomNotMsg {
+	color: red;
+	font-weight: bold;
+}
+
+.msg{
+	font-size: 25px;
+	color: red;
+	font-weight: bold;
+}

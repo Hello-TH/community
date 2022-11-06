@@ -1,0 +1,218 @@
+drop database community; 
+
+create database community; 
+
+use community; 
+
+-- ユーザーテーブル。
+create table users( 
+    id VARCHAR (100) NOT NULL UNIQUE primary key
+    , user_name VARCHAR (15) NOT NULL
+    , email VARCHAR (50) NOT NULL
+    , password VARCHAR (100) NOT NULL
+    , img_name VARCHAR (255)
+    , user_comment VARCHAR (100)
+    , role_user VARCHAR (100)
+    , created_at timestamp not null default current_timestamp
+    , updated_at timestamp not null default current_timestamp 
+        on update current_timestamp
+); 
+
+-- 都道府県のテーブル
+create table prefectures( 
+    id int not null primary key
+    , pref_name VARCHAR (15) not null
+); 
+
+-- カテゴリーテーブル
+create table categories( 
+    id int not null primary key
+    , category_name CHAR (20) not null
+); 
+
+-- 部屋の情報
+create table rooms( 
+    id int AUTO_INCREMENT not null primary key
+    , create_user_id VARCHAR (100) NOT NULL
+    , room_name VARCHAR (50) NOT NULL
+    , people int NOT NULL default 1
+    , good int NOT NULL default 0
+    , bad int NOT NULL default 0
+    , img_name VARCHAR (255)
+    , approval int NOT NULL
+    , pref_id int NOT NULL
+    , category_id int NOT NULL
+    , feature VARCHAR (70)
+    , room_info Varchar (500) NOT NULL
+    , FOREIGN KEY (create_user_id) REFERENCES users(id)
+    , FOREIGN KEY (pref_id) REFERENCES prefectures(id)
+    , FOREIGN KEY (category_id) REFERENCES categories(id)
+    , created_at timestamp not null default current_timestamp
+    , updated_at timestamp not null default current_timestamp 
+        on update current_timestamp
+        , index id(id)
+); 
+
+-- 部屋に対しての評価
+-- 0 評価なし 1 高評価 2 低評価
+create table evaluations( 
+    id int AUTO_INCREMENT NOT NULL primary key
+    , user_id VARCHAR (100) NOT NULL
+    , room_id int NOT NULL
+    , evaluation int NOT NULL
+    , FOREIGN KEY (user_id) REFERENCES users(id)
+    , FOREIGN KEY (room_id) REFERENCES rooms(id)
+    , index user_id_room_id_index(user_id, room_id)
+); 
+
+-- 部屋の参加などをコントロール番号管理
+create table room_controllers( 
+    user_id VARCHAR (100) NOT NULL
+    , room_id int NOT NULL
+    , room_ctrl_num int NOT NULL
+    , FOREIGN KEY (user_id) REFERENCES users(id)
+    , FOREIGN KEY (room_id) REFERENCES rooms(id)
+    , created_at timestamp not null default current_timestamp
+    , index user_id_room_id_index(user_id, room_id)
+); 
+
+-- トーク
+create table talks( 
+    id int AUTO_INCREMENT NOT NULL primary key
+    , room_id int NOT NULL
+    , user_id VARCHAR (100) NOT NULL
+    , message VARCHAR (100) NOT NULL
+    , img_name VARCHAR (255)
+    , editFlag boolean default false
+    , deleteFlag boolean default false
+    , FOREIGN KEY (user_id) REFERENCES users(id)
+    , FOREIGN KEY (room_id) REFERENCES rooms(id)
+    , created_at timestamp not null default current_timestamp
+    , updated_at timestamp not null default current_timestamp 
+        on update current_timestamp
+        , index user_id_room_id_id_index(id, user_id, room_id)
+); 
+
+-- ユーザー
+INSERT 
+INTO users( 
+    id
+    , user_name
+    , email
+    , password
+    , user_comment
+    , role_user
+) 
+VALUES ( 
+    '8a63ab75-de69-45c2-ab7c-9fd788e21a2d'
+    , 'test1'
+    , 'test123@gmail.com'
+    , '$2a$08$bwpul82BZqANcXXVgnjQBeFs/aFbnaQbHqzE.C7TrEhEpifUGzM9u'
+    , 'どうぞよろしくおねがいします。'
+    , 'ROLE_USER'
+); 
+
+INSERT 
+INTO users( 
+    id
+    , user_name
+    , email
+    , password
+    , user_comment
+    , role_user
+) 
+VALUES ( 
+    '3e817ae3-c770-4e43-afc3-4076e7bf1917'
+    , 'test2'
+    , 'test234@gmail.com'
+    , '$2a$08$bwpul82BZqANcXXVgnjQBeFs/aFbnaQbHqzE.C7TrEhEpifUGzM9u'
+    , 'よろしく！！！！'
+    , 'ROLE_USER'
+); 
+
+--　カテゴリー
+INSERT 
+INTO categories 
+VALUES (1, '自由'); 
+
+INSERT 
+INTO categories 
+VALUES (2, '旅行'); 
+
+INSERT 
+INTO categories 
+VALUES (3, 'スポーツ'); 
+
+INSERT 
+INTO categories 
+VALUES (4, 'アウトドア'); 
+
+INSERT 
+INTO categories 
+VALUES (5, 'アート・文化'); 
+
+INSERT 
+INTO categories 
+VALUES (6, '漫画・アニメ'); 
+
+INSERT 
+INTO categories 
+VALUES (7, 'グルメ・料理'); 
+
+INSERT 
+INTO categories 
+VALUES (8, '健康'); 
+
+INSERT 
+INTO categories 
+VALUES (9, 'IT'); 
+
+INSERT 
+INTO categories 
+VALUES (10, 'ペット'); 
+
+INSERT 
+INTO categories 
+VALUES (11, '勉強'); 
+
+INSERT 
+INTO categories 
+VALUES (12, 'ニュース'); 
+
+-- 都道府県
+INSERT 
+INTO prefectures 
+VALUES (1, '全国'); 
+
+INSERT 
+INTO prefectures 
+VALUES (2, '北海道'); 
+
+INSERT 
+INTO prefectures 
+VALUES (3, '東北'); 
+
+INSERT 
+INTO prefectures 
+VALUES (4, '関東'); 
+
+INSERT 
+INTO prefectures 
+VALUES (5, '中部'); 
+
+INSERT 
+INTO prefectures 
+VALUES (6, '近畿'); 
+
+INSERT 
+INTO prefectures 
+VALUES (7, '中国'); 
+
+INSERT 
+INTO prefectures 
+VALUES (8, '四国'); 
+
+INSERT 
+INTO prefectures 
+VALUES (9, '九州'); 
+

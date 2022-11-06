@@ -1,0 +1,12 @@
+main{
+	margin:auto;
+	text-align:center	
+}
+
+.subTitle{
+	display:flex;
+}
+
+.joinBtn{
+	margin-top:50px;
+}

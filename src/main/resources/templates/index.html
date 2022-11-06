@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="flagment/common :: meta_header('コミュニティーサイト',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/topPage.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<div class="mainLeft"></div>
+			<div class=mainCenter>
+				<th:block th:unless="${searchWord}">
+					<h2 class="mcTitle">人気コミュニティー</h2>
+				</th:block>
+				<th:block th:unless="!${searchWord}">
+					<h2 class="mcTitle" th:text="'「' + ${searchWord} + '」の検索結果'"></h2>
+				</th:block>
+				<div th:each="room : ${roomData}">
+					<div class="rankingBox">
+						<div>
+							<img th:src="@{'/image/' + ${room.categoryName} + '.png'}" id="roomImage">
+						</div>
+						<div class="box">
+							<div style="font-weight: bold;">
+								<a th:href="@{'/talkRoomRequest/' + ${room.id}}" th:text="'タイトル： ' + ${room.roomName}"></a>
+							</div>
+							<div th:text="'カテゴリ： ' + ${room.categoryName}"></div>
+							<div th:text="' 特徴： ' + ${room.feature}"></div>
+							<div class="subBox">
+								<div th:text="'地域： ' + ${room.prefName}"></div>
+								<div th:text="'　参加人数： ' + ${room.people}"></div>
+								<div th:text="'　Good数： ' + ${room.good}"></div>
+								<div th:text="'　Gad数： ' + ${room.bad}"></div>
+							</div>
+							<div th:text="'作成日時：' + ${room.createdAt}"></div>
+							<div th:text="'一言： ' + ${room.roomInfo}"></div>
+						</div>
+					</div>
+					<div>---------------------------------------------------------------------------------------------------------</div>
+				</div>
+				<!-- ページャ th:value="${pageSize}" -->
+				<th:block th:if="${pageSize != 0}">
+				<div class="pagerArea">
+					<form th:action="@{'/'}" method="Post">
+						<input type="hidden" name="page" th:value="(${currentPage} - 1)"> <input type="submit"
+							value="<">
+					</form>
+					<div th:each="i : ${#numbers.sequence(1, pageSize)}" class="pagerNumberArea">
+						<form th:action="@{'/'}" method="post">
+							<th:block th:if="${currentPage == i}">
+								<input type="hidden" name="page" th:value="${i}">
+								<input type="submit" th:value="${i}" class="currentNum">
+							</th:block>
+							
+							<th:block th:if="${currentPage != i}">
+								<input type="hidden" name="page" th:value="${i}">
+								<input type="submit" th:value="${i}">
+							</th:block>
+						</form>
+					</div>
+					<form th:action="@{'/'}" method="Post" class="pagerGo">
+						<input type="hidden" name="page" th:value="(${currentPage} + 1)"> <input type="submit"
+							value=">">
+					</form>
+				</div>
+				</th:block>
+			</div>
+			<!-- トーク -->
+			<div class="mainRight">
+				<h2>最新トーク</h2>
+				<div th:each="talk : ${tarkData}">
+					<div th:text="${talk.createdAt}" class="talkInfo"></div>
+					<div class="talkInfo">
+						<a th:href="@{'/talkRoomRequest/' + ${talk.roomId}}" th:text="'ルーム名:　' + ${talk.roomName}"></a>
+						<a th:href="@{'/showUserPage/' + ${talk.userId}}"
+							th:text="'　ユーザー名:　' + ${talk.userName} + 'さん'"></a>
+					</div>
+					<div th:text="${talk.message}"></div>
+					<br>
+				</div>
+			</div>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

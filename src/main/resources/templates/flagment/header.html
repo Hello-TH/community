@@ -1,0 +1,19 @@
+<header th:fragment="header">
+	<div class="topMenu">
+		<div class="iconFeald">
+			<a href="/"><img th:src="@{/image/icon.png}" id="icon"></a>
+		</div>
+		<div class="menuList">
+			<a th:href="@{/showTalkList}" class="menu">トーク一覧</a> <a href="/room/createForm" class="menu">ルーム作成</a>
+			<a th:href="@{/showMyPage}" class="menu"
+				th:text="${#authentication.principal.username} + ' さんのマイページ'"></a>
+			<form th:action="@{/logout}" method="post" class="menu">
+				<input type="submit" value="ログアウト" />
+			</form>
+		</div>
+	</div>
+	<form action="/roomSerch" method="get" class="searchArea">
+		<input type="text" name="searchWord" placeholder="検索ワードを入れてください" autocomplete="off" id="searchBox">
+		<input type="submit" value="検索" id="searchBtn">
+	</form>
+</header>

@@ -1,0 +1,9 @@
+<head th:fragment="meta_header(title,links,scripts)">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="/css/common.css" />
+<!-- (3)タイトルのフォーマット -->
+<title th:text="${title}"></title>
+<!-- (4)各View固有で読み込むもの -->
+<th:block th:replace="${links} ?: _" />
+<th:block th:replace="${scripts} ?: _" />
+</head>

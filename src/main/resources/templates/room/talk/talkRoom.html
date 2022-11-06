@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="/flagment/common :: meta_header('トークルーム',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/talkRoom.css}">
+<script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script th:src="@{/js/talk/talkRoom.js}"></script>
+</head>
+<body id="scroll-inner">
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<a th:href="@{'/roomDetails/' + ${roomId}}" id="roomDetailBtn">部屋詳細</a>
+			<div class="talk" th:each="talk : ${talkData}">
+				<th:block th:if="${!(talk.userId.equals(#authentication.principal.id))}">
+					<p th:text="${talk.createdAt}" class="talkLeft"></p>
+					<div class="talkLeft talkLeftName">
+						<a th:href="@{'/showUserPage/' + ${talk.userId}}" th:text="${talk.userName}"></a>
+					</div>
+					<div class="talk_left">
+						<p th:text="${talk.message}"></p>
+					</div>
+				</th:block>
+				<th:block th:if="${talk.userId.equals(#authentication.principal.id)}">
+					<p th:text="${talk.createdAt}" class="talkRight"></p>
+					<div class="talkRight">
+						<a th:href="@{'/showUserPage/' + ${talk.userId}}" th:text="${talk.userName}"></a>
+					</div>
+					<div class="talk_right">
+						<p th:text="${talk.message}" class="talk"></p>
+					</div>
+				</th:block>
+			</div>
+			<form method="post" id="commentBox" th:action="@{/talk/createMessage}" th:object="${talkForm}">
+				<div th:if="${errMsg}">1文字以上、50文字以内で入力してください。</div>
+				<input type="text" th:field="*{message}" id="comment" autocomplete="off"> <input
+					type="hidden" th:value="${roomId}" name="roomId">
+				<button id="sendBtn">投稿</button>
+			</form>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

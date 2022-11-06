@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="flagment/common :: meta_header('コミュニティーサイト',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/topPage.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<div style="margin-top: 100px;">
+				<!-- /* 「enctype="multipart/form-data"」でアップロードファイルをコントローラークラスに渡す */ -->
+				<form th:action="@{/upload}" method="post" enctype="multipart/form-data"
+					th:object="${uploadForm}">
+					<div>
+						<input type="file" th:field="*{multipartFile}">
+					</div>
+					<div>
+						<input type="submit" value="アップロード">
+					</div>
+				</form>
+			</div>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

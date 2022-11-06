@@ -1,0 +1,20 @@
+.flame {
+	display: flex;
+}
+
+.formArea {
+	margin: auto
+}
+
+.title {
+	text-align: center;
+	border-bottom: solid black 1px;
+}
+
+label, input {
+	display: block;
+}
+
+.formTag {
+	margin-bottom: 10px;
+}

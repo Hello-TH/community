@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<head th:replace="/flagment/common :: meta_header('ルーム作成フォーム',~{::link}, ~{::script})">
+<link rel="stylesheet" th:href="@{/css/createrRoom.css}">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="flagment/header :: header"></div>
+		<main>
+			<div class="contact">
+				<h1 class="contact-ttl">ルーム作成フォーム</h1>
+				<table>
+					<tr th:if="${validationError}" th:each="error : ${validationError}">
+						<td class="errorMsg" th:text="${error}"></td>
+					</tr>
+				</table>
+				<form th:action="@{/room/create}" method="POST" th:object="${roomData}">
+					<table class="contact-table">
+						<tr>
+							<th class="contact-item">タイトル</th>
+							<td class="contact-body"><input type="text" name="title" class="form-text"
+								th:field="*{roomName}" /></td>
+						</tr>
+						<tr>
+							<th class="contact-item">カテゴリ</th>
+							<td class="contact-body"><select name="caegoryId" class="form-select"
+								th:field="*{categoryId}">
+									<option value=1>自由</option>
+									<option value=2>旅行</option>
+									<option value=3>スポーツ</option>
+									<option value=4>アウトドア</option>
+									<option value=5>アート・文化</option>
+									<option value=6>漫画・アニメ</option>
+									<option value=7>グルメ・料理</option>
+									<option value=8>健康</option>
+									<option value=9>IT</option>
+									<option value=10>ペット</option>
+									<option value=11>勉強</option>
+									<option value=12>ニュース</option>
+							</select></td>
+						</tr>
+						<tr>
+							<th class="contact-item">地域</th>
+							<td class="contact-body"><select name="prefId" class="form-select" th:field="*{prefId}">
+									<option value=1>全国</option>
+									<option value=2>北海道</option>
+									<option value=3>東北</option>
+									<option value=4>関東</option>
+									<option value=5>中部</option>
+									<option value=6>近畿</option>
+									<option value=7>中国</option>
+									<option value=8>四国</option>
+									<option value=9>九州</option>
+							</select></td>
+						</tr>
+						<tr>
+							<th class="contact-item">特徴※検索に出やすくなります</th>
+							<td class="contact-body"><input type="text" name="featureWord" class="form-text"
+								th:field="*{feature}" /></td>
+						</tr>
+						<tr>
+							<th class="contact-item">状態</th>
+							<td class="contact-body"><label class="approvalStatus"> <input type="radio"
+									name="approval" value=1 checked="checked" /> <span class="approvalStatusText">自由</span>
+							</label> <label class="approvalStatus"> <input type="radio" name="approval" value=2 /> <span
+									class="approvalStatusText">承認制</span>
+							</label></td>
+						</tr>
+						<tr>
+							<th class="contact-item">説明</th>
+							<td class="contact-body"><textarea name="roomInfo" class="form-textarea"
+									th:field="*{roomInfo}"></textarea></td>
+						</tr>
+					</table>
+					<input class="contact-submit" type="submit" value="作成！！" />
+				</form>
+			</div>
+		</main>
+		<div th:replace="flagment/footer :: footer"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.community.auth.UserMapper">
+
+	<select id="getUserInfo" resultMap="user">
+		SELECT 
+			id
+			, user_name
+			, user_comment 
+			, img_name
+		FROM 
+			users
+		WHERE 
+			id = #{userId}
+	</select>
+
+	<select id="getJoinRoomUser" resultMap="user">
+		SELECT 
+		DISTINCT 
+			U.user_name
+			, U.id
+			, U.user_comment 
+		FROM 
+			users as U 
+		INNER JOIN 
+			room_controllers as RC
+		ON 
+			U.id = RC.user_id 
+		WHERE 
+			RC.room_id= #{roomId}
+	</select>
+	
+	<update id="setUserImageName">
+		UPDATE
+			users
+		SET
+			img_name = #{fileName}
+		WHERE
+			id = #{userId}
+	</update>
+	
+	<select id="getEmailId" resultType="string">
+		SELECT
+		    id 
+		FROM
+		    users 
+		WHERE
+		    email = #{email}
+	</select>
+	
+	<select id="getTemporaryUsersId" resultType="string">
+		SELECT
+			id
+		FROM
+			temporary_users
+		WHERE
+			email = #{email}
+	</select>
+	
+	<insert id="setTemporaryUsers">
+		INSERT 
+		INTO temporary_users( 
+			user_name
+			, email
+			, password
+			, token
+		) 
+		VALUES ( 
+			#{userName}
+			, #{email}
+			, #{password}
+			, #{token}
+		)
+	</insert>
+	
+	
+	<update id="updateTemporaryUser">
+		UPDATE
+			temporary_users
+		SET
+			user_name = #{userName}
+			, email = #{email}
+			, password = #{password}
+			, token = #{token}
+			, updated_at = now()
+		WHERE
+			email = #{email}
+	</update>
+	
+	<select id="getTemporaryUser" resultMap="UserDetailsImpl">
+		SELECT 
+		DISTINCT 
+			user_name
+			, email
+			, password
+			, updated_at
+		FROM 
+			temporary_users
+		WHERE 
+			token = #{token}
+	</select>
+	
+	<insert id="registUser">
+		INSERT 
+		INTO users( 
+			id
+			, user_name
+			, email
+			, password
+			, user_comment
+		) 
+		VALUES ( 
+			#{id}
+			, #{userName}
+			, #{email}
+			, #{password}
+			, 'Hello World!'
+		)
+	</insert>
+	
+	<delete id="deleteTemporaryUser">
+		DELETE 
+	 	FROM
+		    temporary_users
+		WHERE
+		    email = #{email}
+	</delete>
+	
+	<resultMap type="com.example.community.auth.UserDetailsImpl" id="UserDetailsImpl">
+		<result property="user_name" column="user_name" />
+		<result property="email" column="email" />
+		<result property="password" column="password"/>
+		<result property="updated_at" column="updated_at"/>
+	</resultMap>
+
+	<resultMap type="com.example.community.entity.User" id="user">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="userComment" column="user_comment" />
+		<result property="imgName" column="img_name"/>
+	</resultMap>
+</mapper>

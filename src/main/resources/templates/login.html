@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link th:href="@{/css/login.css}" rel="stylesheet" />
+<script type="text/javascript" th:src="@{/js/user/createUserFormValidate.js}"></script>
+<script type="text/javascript" th:src="@{/js/user/loginForm.js}"></script>
+<title>ログイン</title>
+</head>
+<body>
+	<div class="title">
+		<h1>ようこそ！</h1>
+	</div>
+	<div class="flame">
+		<div class="createFormArea formArea">
+			<div class="msg" th:text="${msg}"></div>
+			<table>
+				<tr th:if="${validationError}" th:each="error : ${validationError}">
+					<td class="errorMsg" th:text="${error}"></td>
+				</tr>
+			</table>
+			<h2>新規作成フォーム</h2>
+			<form th:action="@{/temporarySignup}" method="post" th:object="${createUserData}">
+				<div class="formTag">
+					<label>ユーザー名</label> <input type="text" name="userName" placeholder="ユーザー名" id="userName"
+						th:field="*{userName}">
+				</div>
+				<div class="formTag">
+					<label>メールアドレス</label> <input type="text" name="email" placeholder="メールアドレス"
+						th:field="*{email}">
+				</div>
+				<div class="formTag">
+					<label>パスワード</label> <input type="password" name="password" placeholder="小大文字・数字を全て含む8〜30"
+						th:field="*{password}">
+				</div>
+				<div class="formTag">
+					<label>パスワード確認</label> <input type="password" name="passwordConfirm" placeholder="パスワード確認"
+						th:field="*{passwordConfirm}">
+				</div>
+				<input type="submit" value="登録する。" id="registerBtn">
+			</form>
+		</div>
+		<div class="loginArea formArea">
+			<h2 class="heading">ログイン</h2>
+			<form method="post" th:action="@{/login}">
+				<div th:if="${param.error}">
+					ログインに失敗しました
+					<div th:if="${session[SPRING_SECURITY_LAST_EXCEPTION] != null}">
+						<span th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].message}"></span>
+					</div>
+				</div>
+				<div th:if="${param.logout}">ログアウトしました</div>
+				<label for="username">メールアドレス</label>
+				<div>
+					<input type="text" id="loginEmail" name="email">
+				</div>
+				<label for="password">パスワード</label>
+				<div>
+					<input type="password" id="loginPassword" name="password">
+				</div><br>
+				<button type="submit" id="loginBtn">ログイン</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

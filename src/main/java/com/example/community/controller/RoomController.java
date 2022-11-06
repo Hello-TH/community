@@ -198,7 +198,8 @@ public class RoomController {
     
     /**
      * 参加済みの部屋であればトークルームを表示する。 未参加であれば、参加ボタン、申請ボタンを表示する。 すでに参加済みの場合はトーク画面を表示する。
-     * 
+     * ★後ほど修正
+     *
      * @return
      */
     @GetMapping ("/talkRoomRequest/{roomId}")

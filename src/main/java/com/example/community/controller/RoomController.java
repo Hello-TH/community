@@ -135,9 +135,9 @@ public class RoomController {
         List<Room> room = roomService.getSearchRoom (searchWord);
         List<Talk> talk = talkService.getRecentTalk (); // 自由制の部屋の中で、最新のトークを10個表示する。
         
+        // 検索のページャーを後ほど作成
         int pageSize = 1; // 最大ページ数を取得する。
         int currentPage = 0; // 現在表示しているページ
-        
         model.addAttribute ("currentPage", currentPage);
         model.addAttribute ("pageSize", pageSize);
         
